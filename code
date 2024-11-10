@@ -1,0 +1,75 @@
+import telebot
+import random
+from telebot.types import Message
+
+bot = telebot.TeleBot("IP HERE")
+
+
+@bot.message_handler(commands=['start'])
+def cmd_start(message: Message):
+    bot.reply_to(message, "hi, im a bot for education")
+
+@bot.message_handler(commands=['startm'])
+def cmd_startm(message: Message):
+    bot.reply_to(message, "привет мама!!!! Я сделал этого бота :)")
+
+
+@bot.message_handler(commands=['whatup'])
+def cmd_whatup(message: Message):
+    bot.reply_to(message, "was good gng")
+
+
+@bot.message_handler(commands=['password'])
+def cmd_password(message: Message):
+    letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    numbers = "1234567890"
+    symbols = "/?+-:!@#%"
+    lenght = 12
+    password = ""
+    for i in range(4):
+        password += random.choice(letters)
+    for i in range(2):
+        password += random.choice(numbers)
+    for i in range(1):
+        password += random.choice(symbols) 
+    bot.reply_to(message, password)
+
+@bot.message_handler(commands=["name"])
+def cmd_name(message: Message):
+    bot.reply_to(message, "what's ur name")
+    bot.register_next_step_handler(message, get_name)
+
+def get_name(message: Message):
+    name = message.text
+    bot.reply_to(message, "your name: " + name)
+
+
+
+@bot.message_handler(commands=['knb'])
+def cmd_cnb(message: Message):
+    bot.reply_to(message, 'Что вы поставите?')
+    bot.register_next_step_handler(message, get_knb)
+  
+def get_knb(message: Message):
+    player = message.text
+    comp = random.choice(['камень', 'ножницы', 'бумага'])
+    if player == comp:
+        bot.reply_to(message, 'Ничья!')
+    elif player == 'камень' and comp == 'ножницы':
+        bot.reply_to(message, 'Вы победили!')
+    elif player == 'ножницы' and comp == 'бумага':
+        bot.reply_to(message, 'Вы победили!')
+    elif player == 'бумага' and comp == 'камень':
+        bot.reply_to(message, 'Вы победили!')
+    else:
+        bot.reply_to(message, 'Вы проиграли!')
+
+
+@bot.message_handler(commands=['rickroll'])
+def cmd_rickroll(message: Message):
+    bot.reply_to(message, "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+
+
+
+bot.polling()
