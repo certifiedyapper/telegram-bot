@@ -1,22 +1,51 @@
 import telebot
+
 import random
+import os
 from telebot.types import Message
 
-bot = telebot.TeleBot("IP HERE")
+bot = telebot.TeleBot("8189608786:AAHUDpcUW1wjU-Z_h076l3q9QnZiHAOkWjk")
 
 
 @bot.message_handler(commands=['start'])
 def cmd_start(message: Message):
     bot.reply_to(message, "hi, im a bot for education")
 
+
 @bot.message_handler(commands=['startm'])
 def cmd_startm(message: Message):
     bot.reply_to(message, "привет мама!!!! Я сделал этого бота :)")
 
 
+@bot.message_handler(commands=['help'])
+def cmd_help(message: Message):
+    bot.reply_to(message, "here's a list of commands: start, startm, help, whatup, password, name, knb, rickroll")
+
+
 @bot.message_handler(commands=['whatup'])
 def cmd_whatup(message: Message):
     bot.reply_to(message, "was good gng")
+
+
+@bot.message_handler(commands=['coins'])
+def cmd_coins(message: Message):
+    x = random.randint(1, 2)
+    if x == 1:
+        bot.reply_to(message, 'Выпал орел🦅')
+    else:
+        bot.reply_to(message, 'Выпала решка🙁')
+
+
+@bot.message_handler(commands=['task'])
+def cmd_task(message: Message):
+    bot.reply_to(message, "what task do u want to add??")
+    bot.register_next_step_handler(message, add_task)
+
+def add_task(message: Message):
+    task = message.text
+    with open("tasks.txt", "a", encoding="utf-8") as file:
+        file.write(task + "\n")
+        bot.reply_to(message, "your task has been added")
 
 
 @bot.message_handler(commands=['password'])
@@ -34,22 +63,32 @@ def cmd_password(message: Message):
         password += random.choice(symbols) 
     bot.reply_to(message, password)
 
+
+@bot.message_handler(commands=['chips'])
+def cmd_password(message: Message):
+    chips = ["ketchup", "sour onion", "bbq", "s&v", "doritos", "doritos bbq", "dorritos spicy", "doritos 2x spicy"]
+
+    choi = random.choice(chips)
+
+    bot.reply_to(message, choi)
+
+
 @bot.message_handler(commands=["name"])
 def cmd_name(message: Message):
     bot.reply_to(message, "what's ur name")
-    bot.register_next_step_handler(message, get_name)
 
+
+    bot.register_next_step_handler(message, get_name)
 def get_name(message: Message):
     name = message.text
     bot.reply_to(message, "your name: " + name)
-
 
 
 @bot.message_handler(commands=['knb'])
 def cmd_cnb(message: Message):
     bot.reply_to(message, 'Что вы поставите?')
     bot.register_next_step_handler(message, get_knb)
-  
+
 def get_knb(message: Message):
     player = message.text
     comp = random.choice(['камень', 'ножницы', 'бумага'])
@@ -70,6 +109,26 @@ def cmd_rickroll(message: Message):
     bot.reply_to(message, "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 
 
+@bot.message_handler(commands=['read'])
+def cmd_rickroll(message: Message):
+    with open("tasks.txt", "r", encoding="utf-8") as file:
+        text = file.read()
+        bot.reply_to(message, text)
 
+@bot.message_handler(commands=['mem'])
+def cmd_mem(message:Message):
+    mems = os.listdir("memes")
+    mem = random.choice(mems)
+    mem = "memes/" + mem
+    with open(mem, "rb") as file:
+        bot.send_photo(message.chat.id, file)
+
+@bot.message_handler(commands=['animal'])
+def cmd_mem(message:Message):
+    anim = os.listdir("animals")
+    animal = random.choice(anim)
+    animal = "animals/" + animal
+    with open(animal, "rb") as file:
+        bot.send_photo(message.chat.id, file)
 
 bot.polling()
